@@ -1,0 +1,27 @@
+[ng-cloak] {
+	display: none;
+}
+
+body {
+	padding-top: 60px;
+}
+
+#timePickerId {
+	display:inline-block;
+}
+
+.periodLabel {
+	width: 100px;
+}
+.btn-cal {
+	margin-left:5px;
+	margin-right:5px;
+}
+
+.form-inline  [ng-model="hours"], .form-inline  [ng-model="minutes"] {
+    width: 100%;
+}
+
+.strike {
+  text-decoration: line-through;
+}

@@ -1,0 +1,127 @@
+<div ng-controller="HeaterCtrl">
+	<section id="heaterStatus" class="container">
+		<p>déconèèàéète</p>
+		<p>
+			<span ng-if="heaterConfig.mode == 'MANUAL'" class="glyphicon glyphicon-wrench"></span> <span
+				ng-if="heaterConfig.mode == 'AUTOMATIC'" class="glyphicon glyphicon-time"></span> Mode <strong>{{heaterConfig.mode}}</strong>.
+			<span th:text="#{lbl.lastModified}">last modification</span>:{{heaterConfig.lastModified | date:'dd.MM.yyyy hh:mm'}}
+			<span>
+				<button class="btn btn-warning" ng-click="switchMode('AUTOMATIC')" ng-if="heaterConfig.mode == 'MANUAL'"
+					th:text="#{lbl.switchAuto}">automatic</button>
+				<button class="btn btn-warning" ng-click="switchMode('MANUAL')" ng-if="heaterConfig.mode == 'AUTOMATIC'"
+					th:text="#{lbl.switchManual}">Manual</button>
+			</span>
+		</p>
+		<br />
+		<div ng-if="heaterConfig.mode =='MANUAL'">
+			<p ng-class="{true: 'bg-danger',false: 'bg-info'}[heaterConfig.lowlevelHeaterOn]">
+				<span
+					ng-class="{true: 'glyphicon glyphicon-fire text-danger',false: 'glyphicon glyphicon glyphicon-plane text-primary'}[heaterConfig.lowlevelHeaterOn]"></span>
+				<span th:text="#{lbl.heatingActually}">The heater is actually </span>: <span ng-if="heaterConfig.lowlevelHeaterOn"
+					th:text="#{lbl.heaterOn}"> switched on</span><span ng-if="!heaterConfig.lowlevelHeaterOff"
+					th:text="#{lbl.heaterOff}"> switched off</span> (config: <span ng-if="heaterConfig.modeManualHeaterOn"
+					th:text="#{lbl.heaterOn}">switched on</span><span ng-if="!heaterConfig.modeManualHeaterOn"
+					th:text="#{lbl.heaterOff}">éteint</span>) <span>
+					<button class="btn btn-info" ng-click="switchOff()" ng-if="heaterConfig.modeManualHeaterOn"
+						th:text="#{lbl.switchHeaterOff}">Turn on</button>
+					<button class="btn btn-danger" ng-click="switchOn()" ng-if="!heaterConfig.modeManualHeaterOn"
+						th:text="#{lbl.switchHeaterOn}">Turn off</button>
+				</span>
+			</p>
+		</div>
+		<div ng-if="heaterConfig.mode =='AUTOMATIC'">
+			<p ng-class="{true: 'bg-danger',false: 'bg-info'}[heaterConfig.lowlevelHeaterOn]">
+				<span
+					ng-class="{true: 'glyphicon glyphicon-fire text-danger',false: 'glyphicon glyphicon glyphicon-plane text-primary'}[heaterConfig.lowlevelHeaterOn]"></span>
+				<span th:text="#{lbl.heatingActually}">The heater is actually </span>: <span ng-if="heaterConfig.lowlevelHeaterOn"
+					th:text="#{lbl.heaterOn}"> switched on</span><span ng-if="!heaterConfig.lowlevelHeaterOn"
+					th:text="#{lbl.heaterOff}"> switched off</span>
+			</p>
+		</div>
+
+	</section>
+
+	<section id="addPeriod" class="container" ng-show="heaterConfig.mode =='AUTOMATIC'">
+		<hr />
+		<h4>
+			<span th:text="#{title.addPeriod}">Add Period</span>
+			<button class="btn btn-default" ng-click="collapseAddPeriod()">
+				<span
+					ng-class="{true: 'glyphicon glyphicon-chevron-down', false: 'glyphicon glyphicon-chevron-up'}[isAddNewPeriodCollapsed]"></span>
+			</button>
+		</h4>
+
+		<div collapse="isAddNewPeriodCollapsed" class="container">
+			<form name="addPeriodForm" class="form-horizontal">
+
+				<div>
+					<table class="form-group">
+						<tr>
+							<td class="periodLabel"><label for="periodComment" th:text="#{lbl.periodName}">Period</label></td>
+							<td colspan="3"><input id="periodComment" type="text" class="form-control"
+								th:placeholder="#{period.newPeriod}" ng-model="newPeriod.comment" required="true" ng-minlength="5"
+								maxlength="50" /></td>
+						</tr>
+						<tr>
+							<td><label for="periodStartDate" th:text="#{lbl.periodStartDate}">Start Date</label></td>
+							<td><input id="periodStartDateId" type="text" datepicker-popup="dd.MM.yyyy" ng-model="newPeriod.startDate"
+								is-open="startOpened" ng-required="true" close-text="Close" />
+								<button type="button" class="btn btn-default btn-cal" ng-click="open($event, true)">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button></td>
+							<td><timepicker ng-model="newPeriod.startDate" show-meridian="false"></timepicker></td>
+						</tr>
+						<tr>
+							<td><label for="periodStopDate" th:text="#{lbl.periodStopDate}">Stop Date</label></td>
+							<td><input id="periodStopDateId" type="text" datepicker-popup="dd.MM.yyyy" ng-model="newPeriod.stopDate"
+								is-open="stopOpened" ng-required="true" close-text="Close" />
+								<button type="button" class="btn btn-default btn-cal" ng-click="open($event, false)">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button></td>
+							<td><timepicker ng-model="newPeriod.stopDate" show-meridian="false"></timepicker></td>
+						</tr>
+					</table>
+					<button class="btn btn-primary" ng-click="newPeriod()" ng-disabled="addPeriodForm.$invalid" th:text="#{btn.add}">Add</button>
+				</div>
+			</form>
+		</div>
+	</section>
+	<section id="periods" class="container">
+		<hr />
+		<h4 th:text="#{title.periodList}">Liste des périodes configurées</h4>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th th:text="#{lbl.periodName}">Title</th>
+					<th th:text="#{lbl.periodStartDate}">Start date</th>
+					<th th:text="#{lbl.periodStopDate}">Stop date</th>
+					<th th:text="#{lbl.periodEffictiveStart}">Effective start</th>
+					<th th:text="#{lbl.periodEffictiveStop}">Effective stop</th>
+					<th>
+						<form class="form-inline pull-right">
+							<div class="form-group">
+								<label for="search" class="sr-only" th:text="#{lbl.search}">Search</label> <input type="search"
+									class="form-control" ng-model="searchText" id="search" th:placeholder="#{lbl.search}" />
+							</div>
+						</form>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="period in periods | filter:searchText" ng-class="{strike: isPeriodPast(period)}">
+					<td>{{period.comment}}</td>
+					<td>{{period.startDate | date:"dd.MM.yyyy hh:mm"}}</td>
+					<td>{{period.stopDate | date:"dd.MM.yyyy hh:mm" }}</td>
+					<td>{{period.effectiveStart | date:"dd.MM.yyyy hh:mm"}}</td>
+					<td>{{period.effectiveStop | date:"dd.MM.yyyy hh:mm"}}</td>
+					<td align="right">
+						<button class="btn" ng-click="editPeriod(period.id)" th:text="#{btn.edit}">Edit</button>
+						<button class="btn btn-warning" ng-click="deletePeriod(period.id)" th:text="#{btn.delete}">Delete</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+</div>

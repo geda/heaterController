@@ -1,0 +1,52 @@
+<section class="container">
+
+	<form name="editPeriodForm">
+
+		<div class="form-inline">
+			<div class="form-group" ng-class="{ 'has-error': editPeriodForm.comment.$invalid }">
+				<label class="control-label periodLabel" for="periodComment" th:text="#{lbl.periodName}">Name</label> <input
+					id="periodComment" type="text" class="form-control" th:placeholder="#{period.newPeriod}" ng-model="period.comment"
+					name="comment" required="true" ng-minlength="5" maxlength="50" />
+			</div>
+		</div>
+
+		<div class="form-inline">
+			<div class="form-group" ng-class="{ 'has-error': editPeriodForm.startDate.$error.startDateError }">
+				<label class="control-label periodLabel" for="periodStartDateId" th:text="#{lbl.periodStartDate}">Start Date</label>
+				<input id="periodStartDateId" name="startDate" type="text" datepicker-popup="dd.MM.yyyy" ng-model="period.startDate"
+					is-open="startOpened" ng-required="true" close-text="Close" class="form-control" />
+				<button type="button" class="btn btn-default btn-cal" ng-click="open($event, true)">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': editPeriodForm.startDate.$error.startDateError }">
+				<label class="sr-only" for="periodStartTimeId">Start Time</label>
+				<timepicker ng-model="period.startDate" show-meridian="false"></timepicker>
+			</div>
+		</div>
+
+		<div class="form-inline">
+			<div class="form-group" ng-class="{ 'has-error': editPeriodForm.startDate.$error.startDateError }">
+				<label class="control-label periodLabel" for="periodStopDateId" th:text="#{lbl.periodStopDate}">Stop Date</label> <input
+					id="periodStopDateId" name="stopDate" type="text" datepicker-popup="dd.MM.yyyy" ng-model="period.stopDate"
+					is-open="stopOpened" ng-required="true" close-text="Close" class="form-control" />
+				<button type="button" class="btn btn-default btn-cal" ng-click="open($event, false)">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': editPeriodForm.startDate.$error.startDateError }">
+				<label class="sr-only" for="periodStopTimeId">stop Time</label>
+				<timepicker id="periodStopTimeId" ng-model="period.stopDate" show-meridian="false"></timepicker>
+			</div>
+		</div>
+
+		<div>
+			<button class="btn btn-primary" ng-click="save()" ng-disabled="editPeriodForm.$invalid" th:text="#{btn.save}">Save</button>
+			<a class="btn btn-default" href="#heaterconfig" th:text="#{btn.back_to_list}">Back to List</a>
+		</div>
+
+	</form>
+
+</section>

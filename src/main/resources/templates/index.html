@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html layout:decorator="layout">
+<head>
+<title>Heater Controller</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container" ng-show="errors" ng-controller="ErrorController">
+			<alert ng-repeat="error in errors" type="{{'danger'}}" close="close($index)">{{ error }}</alert>
+		</div>
+		<ng-view></ng-view>
+	</div>
+</body>
+</html>
